@@ -371,7 +371,50 @@ namespace HotelRESTConsole
             //Guest nygæst = new Guest();
 
 
+
         }
+
+
+
+        /// <summary>
+        /// løsning til opgave 1
+        /// </summary>
+        /// <param name="serverUrl"></param>
+        /// <param name="selectHotel"></param>
+        private static void Excercise1(string serverUrl, int selectHotel)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(serverUrl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                string urlString = "api/hotels/" + selectHotel;
+
+                try
+                {
+                    var response = client.GetAsync(urlString).Result;
+                    Console.WriteLine("GetAsync : " + urlString);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var hotel = response.Content.ReadAsAsync<Hotel>().Result;
+                        Console.WriteLine("hotel : " + hotel.ToString());
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error: " + response.StatusCode);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Exception : " +e.Message);
+                }
+
+            }
+        }
+
+
+
     }
 }    
 

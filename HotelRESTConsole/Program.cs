@@ -414,6 +414,68 @@ namespace HotelRESTConsole
         }
 
 
+        private static void Exercise2(string serverUrl, List<Hotel> hotellist, List<Room> roomlist)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(serverUrl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                try
+                {
+                    var response = client.GetAsync("api/hotels").Result;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var hotels = response.Content.ReadAsAsync<IEnumerable<Hotel>>().Result;
+
+                        var roskildeHotels = hotels.Where(x => x.Address.Contains("Roskilde")).ToList();
+
+                        hotellist.AddRange(roskildeHotels);
+
+                        Console.WriteLine("Hotels in roskilde");
+                        foreach (var rh in roskildeHotels)
+                        {
+                            Console.WriteLine(rh.ToString());
+                        }
+
+                        var roomresponse = client.GetAsync("api/rooms").Result;
+
+                        if (roomresponse.IsSuccessStatusCode)
+                        {
+                            var rooms = roomresponse.Content.ReadAsAsync<IEnumerable<Room>>().Result;
+
+                            var roskildeRoom = from r in rooms
+                                               join h in hotellist on r.Hotel_No equals h.Hotel_No
+                                               select r;
+
+                            roomlist.AddRange(roskildeRoom.OrderBy(x => x.Hotel_No).ToList());
+
+                            foreach (var rr in roomlist)
+                            {
+                                Console.WriteLine(rr.ToString());
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("response error status code: " + response.StatusCode);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("response error status code: " + response.StatusCode);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Exception : " + e.Message);
+                }
+            }
+        }
+
+
+
 
     }
 }    

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelWebservice2", "HotelWe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelWebservice2.Tests", "HotelWebservice2.Tests\HotelWebservice2.Tests.csproj", "{BFB76CE7-FECA-45CF-B559-2F10CFCA286B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelRESTConsole", "HotelRESTConsole\HotelRESTConsole.csproj", "{AAB52069-64AF-4A31-BFE0-454B4FA1861F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{BFB76CE7-FECA-45CF-B559-2F10CFCA286B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BFB76CE7-FECA-45CF-B559-2F10CFCA286B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BFB76CE7-FECA-45CF-B559-2F10CFCA286B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAB52069-64AF-4A31-BFE0-454B4FA1861F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAB52069-64AF-4A31-BFE0-454B4FA1861F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAB52069-64AF-4A31-BFE0-454B4FA1861F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAB52069-64AF-4A31-BFE0-454B4FA1861F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

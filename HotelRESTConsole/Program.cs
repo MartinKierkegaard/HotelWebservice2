@@ -532,6 +532,73 @@ namespace HotelRESTConsole
             }
         }
 
+        /// <summary>
+        /// Update (HTTP Put) hotel number 3, change the name of the hotel. 
+        /// You have to create a new Hotel Object with the data and then use this object 
+        /// when you create your content string. 
+        /// </summary>
+        /// <param name="serverUrl"></param>
+        private static void Exercise4(string serverUrl)
+        {
+            var hotel3 = new Hotel();
+            hotel3 = null;
+            int hotelno = 3;
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(serverUrl);
+                client.DefaultRequestHeaders.Clear();
+
+                try
+                {
+                    //First thing to do is to get the hotel number 3 into the hotel3 variable by a http Get request
+                    HttpResponseMessage hotelResponse = client.GetAsync("api/hotels/" + hotelno).Result;
+
+                    if (hotelResponse.IsSuccessStatusCode)
+                    {
+                        hotel3 = hotelResponse.Content.ReadAsAsync<Hotel>().Result;
+                        Console.WriteLine(hotel3.ToString());
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error , we diden't get the Hotel ,see if the hotel exist in the database");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Exception: for GET api/hotels/" + hotelno + " message: " + e.Message);
+                }
+
+                if (hotel3 != null)
+                {
+                    //Now change the name and address of the hotel3
+                    hotel3.Name = "Great Hotel";
+                    hotel3.Address = "Great Hotel Road 1";
+                    try
+                    {
+                        //Using a Http Put Request we can update the Hotel number 3
+                        HttpResponseMessage updateResponse = client.PutAsJsonAsync<Hotel>("api/hotels/" + hotelno, hotel3).Result;
+                        if (updateResponse.IsSuccessStatusCode)
+                        {
+                            Console.WriteLine("Hotel is updated");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Error: Hotel is NOT updated");
+                        }
+
+                        Console.WriteLine("status code : " + updateResponse.StatusCode);
+
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Exception: for PUT api/hotels/" + hotelno + " message: " + e.Message);
+
+                    }
+                }
+            }
+        }
+
 
 
 

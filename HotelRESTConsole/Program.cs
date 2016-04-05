@@ -753,6 +753,113 @@ namespace HotelRESTConsole
 
 
 
+        /// <summary>
+        /// Exercise8:
+        /// Update all hotels in roskilde increase the price of a single room with 20%, 
+        /// show the prices before and after the update. 
+        /// </summary>
+        /// <param name="serverUrl"></param>
+        /// <param name="hotellist"></param>
+        /// <param name="roomlist"></param>
+        private static void Exercise8(string serverUrl, List<Hotel> hotellist, List<Room> roomlist)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(serverUrl);
+                client.DefaultRequestHeaders.Clear();
+
+                try
+                {
+                    var response = client.GetAsync("api/hotels").Result;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("Succes we get the hotels");
+                        var hotels = response.Content.ReadAsAsync<IEnumerable<Hotel>>().Result;
+
+                        //filter so we only have the hotels in Roskilde
+                        var roskildeHotels = hotels.Where(x => x.Address.Contains("Roskilde")).ToList();
+
+                        hotellist.AddRange(roskildeHotels);
+
+                        Console.WriteLine("Hotels in roskilde");
+                        foreach (var rh in roskildeHotels)
+                        {
+                            Console.WriteLine(rh.ToString());
+                        }
+
+                        //fetch all the rooms
+                        var roomresponse = client.GetAsync("api/rooms").Result;
+
+                        if (roomresponse.IsSuccessStatusCode)
+                        {
+                            var rooms = roomresponse.Content.ReadAsAsync<IEnumerable<Room>>().Result;
+
+                            //LINQ to join the two list , we only want the single rooms "S"
+                            var roskildeRoom = from r in rooms
+                                               join h in hotellist on r.Hotel_No equals h.Hotel_No
+                                               where r.Types == "S"
+                                               select new Room()
+                                               {
+                                                   Hotel_No = r.Hotel_No,
+                                                   Price = r.Price,
+                                                   Room_No = r.Room_No,
+                                                   Types = r.Types
+                                               };
+
+                            roomlist.AddRange(roskildeRoom.OrderBy(x => x.Hotel_No).ToList());
+
+                            Console.WriteLine("How many rooms will be updated: " + roomlist.Count);
+
+                            foreach (var room in roomlist)
+                            {
+                                try
+                                {
+                                    Console.WriteLine("Room Price before : " + room.Price);
+
+                                    //increase roomprice with 20%
+                                    room.Price *= 1.2;
+                                    string putRoom = "api/rooms/" + room.Room_No;
+
+                                    var roomResponse = client.PutAsJsonAsync(putRoom, room).Result;
+                                    Console.WriteLine("StatusCode " + roomResponse.StatusCode);
+                                    Console.WriteLine(room.ToString());
+
+                                    if (roomResponse.IsSuccessStatusCode)
+                                    {
+                                        Console.WriteLine("Succes: updated the room no: " + room.Room_No);
+                                        Console.WriteLine("Room price after " + room.Price);
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Upps something went wrong for room no: " + room.Room_No);
+                                    }
+                                }
+                                catch (Exception exception)
+                                {
+
+                                    Console.WriteLine("Exception : "+exception.Message);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Room response error status code: " + response.StatusCode);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Hotel GET response error status code: " + response.StatusCode);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Exception:  " + e.Message);
+                }
+            }
+        }
+
+
 
     }
 }    

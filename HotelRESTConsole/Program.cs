@@ -659,6 +659,41 @@ namespace HotelRESTConsole
         }
 
 
+        /// <summary>
+        /// Exercise 6:
+        /// Delete (HTTP Delete) the Hotel number 200.
+        /// </summary>
+        /// <param name="serverUrl"></param>
+        /// <param name="deleteHotelNo">The hotel number to delete ex. 200</param>
+        private static void Exercise6(string serverUrl, int deleteHotelNo)
+        {
+            Console.WriteLine("Exercise6");
+            Console.WriteLine(" 6) Delete(HTTP Delete) the Hotel number 200");
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(serverUrl);
+                client.DefaultRequestHeaders.Clear();
+
+                try
+                {
+                    string deleteUrl = "api/hotels/" + deleteHotelNo;
+                    HttpResponseMessage response = client.DeleteAsync(deleteUrl).Result;
+
+                    Console.WriteLine("Delete Async " + deleteUrl);
+                    Console.WriteLine(response.StatusCode);
+
+                    Console.WriteLine(response.IsSuccessStatusCode
+                        ? "Succcesfull delete"
+                        : "Someting went wrong, hotel not deleted");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("EXCEPTION HTTP DELETE:  "+e.Message);
+                }
+            }
+        }
+
+
 
 
     }

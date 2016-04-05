@@ -688,8 +688,66 @@ namespace HotelRESTConsole
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("EXCEPTION HTTP DELETE:  "+e.Message);
+                    Console.WriteLine("EXCEPTION HTTP DELETE:  " + e.Message);
                 }
+            }
+        }
+
+
+        /// <summary>
+        /// Exercise7:
+        /// Insert a new Room on Hotel number 4 (POST)
+        /// </summary>
+        /// <param name="hotelNo"></param>
+        /// <param name="roomNo"></param>
+        /// <param name="serverUrl"></param>
+        private static void exercise7(int hotelNo, int roomNo, string serverUrl)
+        {
+            Console.WriteLine("7) Insert a new Room on Hotel number 4");
+
+            //First we create the new room object
+            Room myNewRoom = new Room()
+            {
+                Hotel_No = hotelNo,
+                Price = 250.0,
+                Room_No = roomNo,
+                Types = "S"
+            };
+            CreateRoom(serverUrl, myNewRoom);
+        }
+
+        /// <summary>
+        /// a method to create a new room 
+        /// </summary>
+        /// <param name="serverUrl"></param>
+        /// <param name="myNewRoom"></param>
+        private static void CreateRoom(string serverUrl, Room myNewRoom)
+        {
+
+            //Create a Http post
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(serverUrl);
+                client.DefaultRequestHeaders.Clear();
+                string posturl = "api/rooms";
+                try
+                {
+                    HttpResponseMessage response = client.PostAsJsonAsync(posturl, myNewRoom).Result;
+
+                    Console.WriteLine("Post async " + posturl);
+
+                    Console.WriteLine(response.IsSuccessStatusCode
+                    ? "Succcesfull added the room"
+                    : "Someting went wrong, room not added");
+
+                    Console.WriteLine("Status code " + response.StatusCode);
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Exception http post Room:  " + e.Message);
+                }
+
             }
         }
 

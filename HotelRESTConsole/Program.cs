@@ -414,7 +414,7 @@ namespace HotelRESTConsole
         }
 
 
-        private static void Exercise2(string serverUrl, List<Hotel> hotellist, List<Room> roomlist)
+        private static void Exercise2(string serverUrl,List<Hotel> hotellist, List<Room> roomlist)
         {
             using (var client = new HttpClient())
             {
@@ -430,11 +430,12 @@ namespace HotelRESTConsole
                     {
                         var hotels = response.Content.ReadAsAsync<IEnumerable<Hotel>>().Result;
 
+                        //finds the hotels located in Roskilde
                         var roskildeHotels = hotels.Where(x => x.Address.Contains("Roskilde")).ToList();
 
                         hotellist.AddRange(roskildeHotels);
 
-                        Console.WriteLine("Hotels in roskilde");
+                        Console.WriteLine("Hotels in Roskilde");
                         foreach (var rh in roskildeHotels)
                         {
                             Console.WriteLine(rh.ToString());
@@ -446,8 +447,10 @@ namespace HotelRESTConsole
                         {
                             var rooms = roomresponse.Content.ReadAsAsync<IEnumerable<Room>>().Result;
 
+                            //join rooms with the hotels
                             var roskildeRoom = from r in rooms
-                                               join h in hotellist on r.Hotel_No equals h.Hotel_No
+                                               join h in hotellist 
+                                               on r.Hotel_No equals h.Hotel_No
                                                select r;
 
                             roomlist.AddRange(roskildeRoom.OrderBy(x => x.Hotel_No).ToList());
@@ -459,12 +462,12 @@ namespace HotelRESTConsole
                         }
                         else
                         {
-                            Console.WriteLine("response error status code: " + response.StatusCode);
+                            Console.WriteLine("Roomresponse error status code: " + response.StatusCode);
                         }
                     }
                     else
                     {
-                        Console.WriteLine("response error status code: " + response.StatusCode);
+                        Console.WriteLine("Hotelsresponse error status code: " + response.StatusCode);
                     }
                 }
                 catch (Exception e)

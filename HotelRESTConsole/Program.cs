@@ -600,6 +600,63 @@ namespace HotelRESTConsole
         }
 
 
+        /// <summary>
+        /// Insert (HTTP Post) a new hotel fx number 200. 
+        /// </summary>
+        /// <param name="serverUrl"></param>
+        private static void Exercise5(string serverUrl)
+        {
+            Console.WriteLine("Exercise 5");
+            Console.WriteLine("Insert (HTTP Post) a new hotel fx number 200");
+
+            int myNewHotelNo = 200;
+            //First we create the new hotel object
+            var myNewHotel = new Hotel()
+            {
+                Hotel_No = myNewHotelNo,
+                Address = "Fiddlerhotel 1",
+                Name = "Fiddler hotel",
+                Room = new List<Room>()
+            };
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(serverUrl);
+                client.DefaultRequestHeaders.Clear();
+
+                var responsePost = client.PostAsJsonAsync<Hotel>("api/hotels", myNewHotel).Result;
+                Console.WriteLine("PostAsync");
+                Console.WriteLine("Status code " + responsePost.StatusCode);
+
+                if (responsePost.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("Success, the hotel is added");
+                    Console.WriteLine("Status code  POST" + responsePost.StatusCode);
+
+                    //Success , Now we can get the hotel by a Http GET to see if it is in the Database
+                    var responseHotel = client.GetAsync("api/hotels/" + myNewHotelNo).Result;
+                    Console.WriteLine("GetAsync");
+
+                    if (responseHotel.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("Success to GET the Hotel200");
+                        var hotel200 = responseHotel.Content.ReadAsAsync<Hotel>().Result;
+                        Console.WriteLine(hotel200.ToString());
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error, diden't GET the hotel200");
+                    }
+                    Console.WriteLine("Statuscode GET:" + responseHotel.StatusCode);
+                }
+                else
+                {
+                    Console.WriteLine("Error the HTTP POST diden't work");
+                    Console.WriteLine("Statuscode POST:" + responsePost.StatusCode);
+
+                }
+            }
+        }
 
 
 

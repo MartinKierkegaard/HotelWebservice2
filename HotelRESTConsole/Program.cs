@@ -377,10 +377,10 @@ namespace HotelRESTConsole
 
 
         /// <summary>
-        /// løsning til opgave 1
+        /// Select (HTTP Get) hotel number 3 and put it into an List of type Hotel (List<Hotel>)
         /// </summary>
         /// <param name="serverUrl"></param>
-        /// <param name="selectHotel"></param>
+        /// <param name="selectHotel">the hotels number ex. 3</param>
         private static void Excercise1(string serverUrl, int selectHotel)
         {
             using (var client = new HttpClient())
@@ -413,8 +413,63 @@ namespace HotelRESTConsole
             }
         }
 
+        /// <summary>
+        /// Exercise 2:
+        /// Select (HTTP Get) all hotels and all of them located in Roskilde 
+        /// should be put into a list of hotels using LINQ
+        /// </summary>
+        /// <param name="serverUrl"></param>
+        /// <param name="hotellist"></param>
+        private static void Exercise2(string serverUrl, List<Hotel> hotellist)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(serverUrl);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-        private static void Exercise2(string serverUrl,List<Hotel> hotellist, List<Room> roomlist)
+                try
+                {
+                    var response = client.GetAsync("api/hotels").Result;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var hotels = response.Content.ReadAsAsync<IEnumerable<Hotel>>().Result;
+
+                        //finds the hotels located in Roskilde
+                        var roskildeHotels = hotels.Where(x => x.Address.Contains("Roskilde")).ToList();
+
+                        hotellist.AddRange(roskildeHotels);
+
+                        Console.WriteLine("Hotels in Roskilde");
+                        foreach (var rh in roskildeHotels)
+                        {
+                            Console.WriteLine(rh.ToString());
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Hotelsresponse error status code: " + response.StatusCode);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Exception : " + e.Message);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Exercise 3:
+        /// Select (HTTP Get) all hotels, and all of them located in Roskilde 
+        /// should be put into a list of hotels. Select all the rooms for this hotels(Roskilde hotels) 
+        /// and put them into another list of rooms using LINQ
+        /// </summary>
+        /// <param name="serverUrl"></param>
+        /// <param name="hotellist"></param>
+        /// <param name="roomlist"></param>
+        private static void Exercise3(string serverUrl,List<Hotel> hotellist, List<Room> roomlist)
         {
             using (var client = new HttpClient())
             {
@@ -476,6 +531,8 @@ namespace HotelRESTConsole
                 }
             }
         }
+
+
 
 
 

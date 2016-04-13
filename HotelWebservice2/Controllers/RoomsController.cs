@@ -9,12 +9,40 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using HotelWebservice2;
+using HotelWebservice2.DTO;
 
 namespace HotelWebservice2.Controllers
 {
     public class RoomsController : ApiController
     {
         private HotelContext db = new HotelContext();
+
+
+        /// <summary>
+        /// Giver alle single rooms fra det ønskede område
+        /// </summary>
+        /// <param name="area">område fx. roskilde</param>
+        /// <returns>IEnumerable<HotelRoomTypeDTO> </returns>
+        [Route("api/Rooms/{area}/{roomtype}/Area")]
+        [HttpGet]
+        public IEnumerable<HotelRoomTypeDTO> GetSingleRoomsByArea(string area, string roomtype)
+        {
+            IEnumerable<HotelRoomTypeDTO> singleRoomList = 
+                               from r in db.Room
+                               join h in db.Hotel on r.Hotel_No equals h.Hotel_No
+                               where r.Types == roomtype
+                               && h.Address.Contains(area)
+                               select new HotelRoomTypeDTO()
+                               {
+                                   Name = h.Name,
+                                   Price = r.Price,
+                                   Room_No = r.Room_No,
+                                   Types = r.Types
+                               };
+            return singleRoomList;
+
+            //return db.Booking.Where(x => x.Guest_No == GuestNo);
+        }
 
         // GET: api/Rooms
         public IQueryable<Room> GetRoom()

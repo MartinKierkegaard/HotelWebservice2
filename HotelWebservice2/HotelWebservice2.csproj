@@ -214,6 +214,10 @@
     <Compile Include="Controllers\HotelsController.cs" />
     <Compile Include="Controllers\RoomsController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Controllers\View_PriceBookingGuestController.cs" />
+    <Compile Include="Controllers\View_psykopatQueryController.cs" />
+    <Compile Include="DTO\BookingDTO.cs" />
+    <Compile Include="DTO\HotelRoomTypeDTO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -228,6 +232,10 @@
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Room.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewHotelContext.cs" />
+    <Compile Include="ViewPsykopatContext2.cs" />
+    <Compile Include="View_PriceBookingGuest.cs" />
+    <Compile Include="View_psykopatQuery.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />

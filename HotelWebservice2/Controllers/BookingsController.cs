@@ -4,17 +4,37 @@ using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using HotelWebservice2;
+using HotelWebservice2.DTO;
 
 namespace HotelWebservice2.Controllers
 {
     public class BookingsController : ApiController
     {
         private HotelContext db = new HotelContext();
+
+        private static readonly Expression<Func<Booking, BookingDTO>> AsBookingDto =
+         x => new BookingDTO()
+         {
+        Booking_id = x.Booking_id,
+        Hotel_No =  x.Hotel_No
+         };
+
+        [Route("api/Bookings/{GuestNo:int}/Guest")]
+        [HttpGet]
+        public IEnumerable<Booking> GetBookingByGuestNo(int GuestNo)
+        {
+
+            return db.Booking.Where(x => x.Guest_No == GuestNo);
+        } 
+
+
+
 
         // GET: api/Bookings
         public IQueryable<Booking> GetBooking()

@@ -16,6 +16,16 @@ namespace HotelWebservice2.Controllers
     {
         private HotelContext db = new HotelContext();
 
+
+        [Route("api/Guests/{GuestNo:int}/Bookings")]
+        [HttpGet]
+        public IEnumerable<Booking> GivMigBookingByGuestNo(int GuestNo)
+        {
+            return db.Booking.Where(x => x.Guest_No == GuestNo);
+        }
+
+
+
         // GET: api/Guests
         public IQueryable<Guest> GetGuest()
         {
